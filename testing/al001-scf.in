@@ -1,0 +1,38 @@
+&CONTROL
+  restart_mode='from_scratch',
+  prefix='Al-100test',
+  tprnfor = .true.
+  pseudo_dir = '/home/alessandro/Quantum-Espresso/qe-6.5/pseudo/',
+  outdir='/home/alessandro/scratch'
+/
+&SYSTEM
+  nosym       = .TRUE.,
+  ibrav       = 6,
+  celldm(1)   = 5.3033D0, 
+  celldm(3)   = 7.D0,
+  nat         = 5,
+  ntyp        = 1,  
+  ecutwfc     = 20.D0,
+  occupations = "smearing",
+  smearing    = "m-p",
+  degauss     = 0.05D0,
+/
+&ELECTRONS
+  conv_thr    = 1.D-8,
+  mixing_mode = "local-TF",
+  mixing_beta = 0.5D0,
+/
+ATOMIC_SPECIES
+#Al  1.D0  Al_rel-pbesol-uspp.UPF
+Al   1.D0  Al.pz-vbc.UPF
+ATOMIC_POSITIONS (alat)
+Al   0.0000000  0.0000000  2.828426
+Al   0.5000000  0.5000000  2.121320
+Al   0.0000000  0.0000000  1.414213
+Al   0.5000000  0.5000000  0.707107  0 0 0
+Al   0.0000000  0.0000000  0.000000  0 0 0
+K_POINTS
+3
+0.125  0.125  0.0  1.0
+0.125  0.375  0.0  2.0
+0.375  0.375  0.0  1.0
