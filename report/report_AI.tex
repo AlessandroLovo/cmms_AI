@@ -1,0 +1,35 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage[english]{babel}
+\input{header.tex}
+
+\begin{document}
+
+\title{Study of the relaxation of the Al (100) surface via Ab Initio simulations}
+\author{Alessandro Lovo, mat. 1236048}
+
+\maketitle
+
+\section{Introduction}
+  The aim of this report is use Ab Initio (AI) methods to study the surface of an Aluminum crystal. In order to do this the Quantum Espresso \cite{rif:QE} will be used to first find the bulk value of the lattice constant for Al and then simulate a surface to study its relaxation from the bulk configuration.
+
+\section{Estimation of the bulk lattice constant}
+  The Al crystal has an fcc structure and the idea to find the bulk lattice constant $a$ is to simulate the crystal at different values of $a$ and for each of them compute the pressure $P$ resulting on the system. At this point data can be fitted with the Murnaghan equation of state:
+
+  \begin{equation*}
+    P(V) = \frac{K_0}{K_0'}\left(\left(\frac{V}{V_0} \right)^{-K_0'} - 1 \right)
+  \end{equation*}
+
+  where $V$ is the volume of the unit cell and $V_0$ the one at equilibrium, while the bulk modulus is $K = -V \left(\frac{\partial P}{\partial V}\right)_T \approx K_0 + K_0'P$
+  \subsection{Optimization of the simulation parameters}
+
+
+
+
+
+
+\begin{thebibliography}{100}
+  \bibitem{rif:QE} P. Giannozzi et al. \emph{Quantum Espresso}  \url{http://www.quantum-espresso.org}
+  \bibitem{rif:murnaghan} Wikipedia \emph{Murnaghan equation of state}  \url{https://en.wikipedia.org/wiki/Murnaghan_equation_of_state}
+\end{thebibliography}
+
+\end{document}

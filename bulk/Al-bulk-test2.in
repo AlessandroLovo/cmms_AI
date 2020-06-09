@@ -1,6 +1,6 @@
 &CONTROL
   restart_mode='from_scratch',
-  prefix='Al_bulk',
+  prefix='Abt2',
   pseudo_dir = '/home/alessandro/Quantum-Espresso/qe-6.5/pseudo/',
   outdir = '/home/alessandro/scratch',
   calculation = 'scf',
@@ -9,22 +9,22 @@
 /
 &SYSTEM
   ibrav = 2,
-  celldm(1) = 7.640000,
+  celldm(1) = 7.600000,
   nat = 1,
   ntyp = 1,
-  ecutwfc = 80.0,
-  ecutrho = 320.0,
+  ecutwfc = 120.0,
+  ecutrho = 1200.0,
   occupations = 'smearing',
   smearing = 'mp',
   degauss = 0.0200,
 /
 &ELECTRONS
   mixing_beta = 0.70,
-  conv_thr = 1d-7,
+  conv_thr = 1d-8,
 /
 ATOMIC_SPECIES
   Al 26.981 Al.pbe-uspp.UPF
 ATOMIC_POSITIONS (alat)
   Al 0. 0. 0. 1 1 1
 K_POINTS automatic
-  8 8 8 1 1 1
+  10 10 10 1 1 1
