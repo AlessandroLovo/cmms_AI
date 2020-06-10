@@ -10,17 +10,94 @@
 \maketitle
 
 \section{Introduction}
-  The aim of this report is use Ab Initio (AI) methods to study the surface of an Aluminum crystal. In order to do this the Quantum Espresso \cite{rif:QE} will be used to first find the bulk value of the lattice constant for Al and then simulate a surface to study its relaxation from the bulk configuration.
+  The aim of this report is use Ab Initio (AI) methods to study the surface of an Aluminium crystal. In order to do this the Quantum Espresso \cite{rif:QE} programm will be used to first find the bulk value of the lattice constant for Al and then simulate a surface to study its relaxation from the bulk configuration.
 
 \section{Estimation of the bulk lattice constant}
-  The Al crystal has an fcc structure and the idea to find the bulk lattice constant $a$ is to simulate the crystal at different values of $a$ and for each of them compute the pressure $P$ resulting on the system. At this point data can be fitted with the Murnaghan equation of state:
+  The idea to find the equilibrium lattice constant $a_0$ is to simulate the crystal at different values of $a$ and for each of them compute the pressure $P$ resulting on the system. At this point data can be fitted with the Murnaghan equation of state:
 
   \begin{equation*}
-    P(V) = \frac{K_0}{K_0'}\left(\left(\frac{V}{V_0} \right)^{-K_0'} - 1 \right)
+    P(V;V_0,K_0,k_0') = \frac{K_0}{K_0'}\left(\left(\frac{V}{V_0} \right)^{-K_0'} - 1 \right)
   \end{equation*}
 
-  where $V$ is the volume of the unit cell and $V_0$ the one at equilibrium, while the bulk modulus is $K = -V \left(\frac{\partial P}{\partial V}\right)_T \approx K_0 + K_0'P$
+  where $V$ is the volume of the unit cell and $V_0$ the one at equilibrium, while the bulk modulus is $K = -V \left(\frac{\partial P}{\partial V}\right)_T \approx K_0 + K_0'P$.
+  But to have meaningful results from the simulations one has first to optimize some parameters of the Quantum Espresso (QE) code.
+
   \subsection{Optimization of the simulation parameters}
+    \paragraph{Structure of the unit cell}
+      Since the crystalline structure of Al is face centerd cubic (fcc) with no basis, it is enough to consider an fcc unit cell with a single Al atom at the origin.
+    \paragraph{Pseudopotential}
+      From all the many pseudopotentials provided in the QE library, here a non relativistic one (\verb|Al.pz-vbc.UPF|) and a scalar-relativistic one (\verb|Al.pbe-nl-rrkjus_psl.1.0.0.UPF|) are tested.
+      With the latter one obtains a better approximation but the simulations take longer.
+    \paragraph{Number of k points and smearing}
+      To sample the first Brillouin zone a grid with \verb|n k points| in each direction is used: the higher the number the more accurate is the result, but also the longer the simulation takes. To mitigate this coarse sampling of the Brillouin zone one can use a smearing of the energy levels whose amplitude is controlled by the variable \verb|degauss|. By monitoring how the total energy behaves with these two parameters one can find a proper value for them: $\verb|n k points| = 8$, $ \verb|degauss| = 0.02 \si{.Ry}$ (fig \ref{fig:bulk_degauss-n_k} where the two 1D plots are taken at the best value of the other parameter.).
+
+    \begin{figure}
+      \centering
+      \resizebox{0.45\textwidth}{!}{\import{img/}{bulk_degauss-n_k_rel.pgf}}
+      \resizebox{0.45\textwidth}{!}{\import{img/}{bulk_degauss-n_k_rel_time.pgf}} \\
+      \resizebox{0.45\textwidth}{!}{\import{img/}{bulk_n_k_rel.pgf}}
+      \resizebox{0.45\textwidth}{!}{\import{img/}{bulk_degauss_rel.pgf}}
+      \caption{Behavior of the total energy and the simulation time as a function of the number of k points and of the amount of smearing. Simulations performed on the relativistic pseudopotential, but with the other the results are very similar.}
+      \label{fig:bulk_degauss-n_k}
+    \end{figure}
+
+    % \begin{figure}[H]
+    %   \centering
+    %   \begin{subfigure}[]{
+    %     \resizebox{0.45\textwidth}{!}{\import{img/}{bulk_n_k_rel.pgf}}
+    %     \label{fig:bulk_n_k}}
+    %   \end{subfigure}
+    %   \begin{subfigure}[]{
+    %     \resizebox{0.45\textwidth}{!}{\import{img/}{bulk_degauss_rel.pgf}}
+    %     \label{fig:bulk_degauss}}
+    %   \end{subfigure}
+    % \end{figure}
+
+  \paragraph{Energy cutoffs}
+    The orbitals for the electron are expanded in plain waves, and the number of waves used in the expansion is controlled by the variable \verb|ecutwfc|. Similarly the number of waves used for computing the density is controlled by \verb|ecutrho| which by default is set to $4\verb|ecutwfc|$. In fig \ref{fig:bulk_ecut} one can see that with $ \verb|ecutwfc| = 80 \si{.Ry}$ error on the energy is of the order of $10^{-7} \si{.Ry}$. With this setting the effect of the cutoff on the density is negligible and so the default value is used.
+
+    \begin{figure}
+      \centering
+      \resizebox{0.45\textwidth}{!}{\import{img/}{bulk_ecutwfc_rel2.pgf}}
+      \resizebox{0.45\textwidth}{!}{\import{img/}{bulk_ecutrho_rel2.pgf}}
+      \caption{Total energy and simulation time as a function of the two energy cutoffs.}
+      \label{fig:bulk_ecut}
+    \end{figure}
+
+  \subsection{Results}
+    The results of the scanning of the lattice parameter are reported in fig \ref{fig:bulk_a} while the results of the fit with with the Murnaghan equation are in tab \ref{tab:bulk_a}.  
+
+  \begin{figure}
+    \centering
+    \resizebox{0.45\textwidth}{!}{\import{img/}{bulk_a_fine.pgf}}
+    \resizebox{0.45\textwidth}{!}{\import{img/}{bulk_a_fine_rel.pgf}}
+    \caption{Behavior of the total energy and pressure as a function of the lattice constant for the non relativistic and relativistic pseudopotential respectively.}
+    \label{fig:bulk_a}
+  \end{figure}
+
+  \begin{table}
+    \centering
+    \begin{tabular}{cccccccc}
+      \toprule
+        & $a_0\, [a.u.]$ & $K_0\, [\si{\kilo\bar}]$ & $K_0'$ \\
+      \midrule
+      non relativistic & $7.46834 \pm 0.00004$ & $841.0 \pm 0.2$ & $4.73 \pm 0.01$ \\
+      relativistic & $7.624231 \pm 0.000009$ & $775.76 \pm 0.06$ & $4.995 \pm 0.006$ \\
+      \midrule
+      experimental \cite{rif:bulk_exp_data} & $7.646$ & $721$ & $4.72$ \\
+      \bottomrule
+    \end{tabular}
+    \caption{Results of the fit of the pressure with the two pseudopotentials and corresponding experimental data}
+    \label{tab:bulk_a}
+  \end{table}
+
+
+
+
+
+
+
+
 
 
 
@@ -30,6 +107,8 @@
 \begin{thebibliography}{100}
   \bibitem{rif:QE} P. Giannozzi et al. \emph{Quantum Espresso}  \url{http://www.quantum-espresso.org}
   \bibitem{rif:murnaghan} Wikipedia \emph{Murnaghan equation of state}  \url{https://en.wikipedia.org/wiki/Murnaghan_equation_of_state}
+  \bibitem{rif:manual1}  \emph{Quantum ESPRESSO tutorial:  Self-Consistent Calculations,Supercells, Structural Optimization}  \url{http://indico.ictp.it/event/8301/session/95/contribution/528/material/slides/0.pdf}
+  \bibitem{rif:bulk_exp_data} D.E. Grady \emph{Equatio of state for solids}  \url{https://doi.org/10.1063/1.3686399}
 \end{thebibliography}
 
 \end{document}
