@@ -9,6 +9,7 @@ Created on Sat Jun  6 16:25:01 2020
 import os
 import time
 import pandas as pd
+import numpy as np
 
 
 pseudo_dir = '/home/alessandro/Quantum-Espresso/qe-6.5/pseudo/'
@@ -257,3 +258,124 @@ def bulk_sim_vc_relax(work_dir='.',name='al-bulk-test-vcr', overwrite=True, verb
     if verbose:
         print('Simulation took %.2f seconds' %(time.time() - start_time))
     return vs,ps,es
+
+
+
+def surface_sim_relax(work_dir='.',name='al-surf-test', overwrite=True, verbose=False,
+                      prefix='Al_surf',forc_conv_thr=0.001,
+                      a_0=7.46834,vacuum_thickness=16.,n_layers=5,ecutwfc=60.0,ecutrho_r=4,degauss=0.02,
+                      mixing_beta=0.7,conv_thr_o=-8,
+                      bfgs_ndim=1,upscale=100,pot_extrapolation='second_order',wfc_extrapolation='second_order',
+                      pseudo_name='Al.pz-vbc.UPF',
+                      n_k_points_hor=8,n_k_points_ver=1,k_points_shift='1 1 0'):
+    '''
+    a_0 in Bohr
+    energies in Ry
+    press in kbar
+    forces in hartree/bohr
+    '''
+    
+    start_time = time.time()
+    
+    if n_layers %2 == 0:
+        raise ValueError('Please use an odd number of layers.')
+        
+    aspect_ratio = (n_layers*0.5*a_0 + vacuum_thickness)/(a_0/np.sqrt(2))
+    
+    filename_in = work_dir.rstrip('/') + '/' + name + '.in'
+    filename_out = work_dir.rstrip('/') + '/' + name + '.out'
+    
+    if os.path.exists(filename_in) and not overwrite:
+        raise FileExistsError(filename_in + ' exists! To overwrite set overwrite=True')
+    # write input for pw.x
+    file = open(filename_in,'w')
+    
+    file.write('&CONTROL\n')
+    file.write('  restart_mode=\'from_scratch\',\n')
+    file.write('  prefix=\'%s\',\n' %prefix)
+    file.write('  pseudo_dir = \'%s\',\n' %pseudo_dir)
+    file.write('  outdir = \'%s\',\n' %scratch_dir)
+    file.write('  calculation = \'relax\',\n')
+    file.write('  forc_conv_thr = %f,\n' %forc_conv_thr)
+    file.write('/\n')
+    
+    file.write('&SYSTEM\n')
+    file.write('  nosym = .true.,\n')
+    file.write('  ibrav = 6,\n')
+    file.write('  celldm(1) = %f,\n' %(a_0/np.sqrt(2)))
+    file.write('  celldm(3) = %f,\n' %aspect_ratio)
+    file.write('  nat = %d,\n' %n_layers)
+    file.write('  ntyp = 1,\n')
+    file.write('  ecutwfc = %.1f,\n' %ecutwfc)
+    file.write('  ecutrho = %.1f,\n' %(ecutwfc*ecutrho_r))
+    file.write('  occupations = \'smearing\',\n')
+    file.write('  smearing = \'mp\',\n')
+    file.write('  degauss = %.4f,\n' %degauss)
+    file.write('/\n')
+    
+    file.write('&ELECTRONS\n')
+    file.write('  mixing_mode = \'local-TF\',\n')
+    file.write('  mixing_beta = %.2f,\n' %mixing_beta)
+    file.write('  conv_thr = 1d%d,\n' %conv_thr_o)
+    file.write('/\n')
+    
+    file.write('&IONS\n')
+    file.write('  ion_dynamics = \'bfgs\',\n')
+    file.write('  bfgs_ndim = %d,\n' %bfgs_ndim)
+    file.write('  upscale = %.1f,\n' %upscale)
+    file.write('  pot_extrapolation = \'%s\',\n' %pot_extrapolation)
+    file.write('  wfc_extrapolation = \'%s\',\n' %wfc_extrapolation)
+    file.write('/\n')
+    
+    
+    file.write('ATOMIC_SPECIES\n')
+    file.write('  Al 26.981 %s\n' %pseudo_name)
+    
+    file.write('ATOMIC_POSITIONS (alat)\n')
+    for i in range(n_layers):
+        if i == n_layers // 2:
+            file.write('  Al 0. 0. %f 0 0 0\n' %(i/np.sqrt(2)))
+        elif i % 2 == 0:
+            file.write('  Al 0. 0. %f\n' %(i/np.sqrt(2)))
+        else:
+            file.write('  Al 0.5 0.5 %f\n' %(i/np.sqrt(2)))
+    
+    file.write('K_POINTS automatic\n')
+    file.write('  %d %d %d %s\n' %(n_k_points_hor,n_k_points_hor,n_k_points_ver,k_points_shift))
+        
+    file.close()
+    
+    #run pw.x
+    cmd = '%s < %s > %s' %(pw_exe,filename_in,filename_out)
+    if verbose:
+        print(cmd)
+    os.system('echo '+cmd)
+    os.system(cmd)
+    
+    #collect atomic positions
+    os.system('grep \'Al    \' %s > tmp.txt' %filename_out)
+    raw_v = [line for line in open('tmp.txt','r').readlines()]
+    atomic_coords = []
+    for i,line in enumerate(raw_v[1:]):
+        if i % n_layers == 0:
+            atomic_coords.append([])
+        epurated = line.rstrip('0 \n').lstrip('Al ')
+        coords = [float(s) for s in epurated.split(' ') if len(s) > 0]
+        atomic_coords[-1].append(coords)
+    
+    #collect total energies
+    os.system('grep \'!    total energy\' %s > tmp.txt' %filename_out)
+    raw_v = [line for line in open('tmp.txt','r').readlines()]
+    es = []
+    for line in raw_v:
+        prefix,sep,suffix = line.partition('=')
+        e,sep,suffix = suffix.lstrip(' ').partition(' ')
+        es.append(float(e))
+    
+    os.remove('tmp.txt')
+    t = time.time() - start_time
+    
+    if verbose:
+        print('Simulation took %.2f seconds' %t)
+        
+    return np.array(es), np.array(atomic_coords), t
