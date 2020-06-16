@@ -22,6 +22,13 @@ def make_bulk_scf_df_template():
     return pd.DataFrame(data=[],columns=['pseudo_name','a_0','ecutwfc','ecutrho_r','degauss','mixing_beta','conv_thr_o','n_k_points',
                         'cell_volume','pressure','total_energy','n_it','sim_time'])
 
+def make_surface_df_template(n_layers):
+    llabels = ['z atom %d' %(i+1) for i in range(n_layers)]
+    return pd.DataFrame(data=[],columns=(['pseudo_name','a_0','vacuum_thickness','n_layers','ecutwfc','ecutrho_r','degauss',
+                        'mixing_beta','conv_thr_o','n_k_points_hor','n_k_points_ver','k_point_shift',
+                        'total_energy','n_it','sim_time'] + llabels))
+
+
 
 def bulk_sim_scf(work_dir='.',name='al-bulk-test-scf', overwrite=True, verbose=False, save_df = None,
                  prefix='Al_bulk',
@@ -261,8 +268,8 @@ def bulk_sim_vc_relax(work_dir='.',name='al-bulk-test-vcr', overwrite=True, verb
 
 
 
-def surface_sim_relax(work_dir='.',name='al-surf-test', overwrite=True, verbose=False,
-                      prefix='Al_surf',forc_conv_thr=0.001,
+def surface_sim_relax(work_dir='.',name='al-surf-test', overwrite=True, verbose=False, save_df = None,
+                      prefix='',forc_conv_thr=0.001,
                       a_0=7.46834,vacuum_thickness=16.,n_layers=5,ecutwfc=60.0,ecutrho_r=4,degauss=0.02,
                       mixing_beta=0.7,conv_thr_o=-8,
                       bfgs_ndim=1,upscale=100,pot_extrapolation='second_order',wfc_extrapolation='second_order',
@@ -276,6 +283,9 @@ def surface_sim_relax(work_dir='.',name='al-surf-test', overwrite=True, verbose=
     '''
     
     start_time = time.time()
+    
+    if len(prefix) == 0:
+        prefix = name
     
     if n_layers %2 == 0:
         raise ValueError('Please use an odd number of layers.')
@@ -374,6 +384,12 @@ def surface_sim_relax(work_dir='.',name='al-surf-test', overwrite=True, verbose=
     
     os.remove('tmp.txt')
     t = time.time() - start_time
+    
+    
+    if type(save_df) != type(None):
+        save_df.loc[len(save_df)] = [pseudo_name,a_0,vacuum_thickness,n_layers,ecutwfc,ecutrho_r,degauss,
+                                     mixing_beta,conv_thr_o,n_k_points_hor,n_k_points_ver,k_points_shift,
+                                     es[-1],len(es),t] + list(np.array(atomic_coords)[-1,:,2])
     
     if verbose:
         print('Simulation took %.2f seconds' %t)
