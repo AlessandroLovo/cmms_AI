@@ -284,6 +284,11 @@ def surface_sim_relax(work_dir='.',name='al-surf-test', overwrite=True, verbose=
     
     start_time = time.time()
     
+    if name == 'al-surf-test':
+        name += ('-nl%d' %n_layers)
+    
+    tmp_name = ('tmp-nl%d.txt' %n_layers)
+    
     if len(prefix) == 0:
         prefix = name
     
@@ -363,8 +368,8 @@ def surface_sim_relax(work_dir='.',name='al-surf-test', overwrite=True, verbose=
     os.system(cmd)
     
     #collect atomic positions
-    os.system('grep \'Al    \' %s > tmp.txt' %filename_out)
-    raw_v = [line for line in open('tmp.txt','r').readlines()]
+    os.system('grep \'Al    \' %s > %s' %(filename_out,tmp_name))
+    raw_v = [line for line in open(tmp_name,'r').readlines()]
     atomic_coords = []
     for i,line in enumerate(raw_v[1:]):
         if i % n_layers == 0:
@@ -374,15 +379,15 @@ def surface_sim_relax(work_dir='.',name='al-surf-test', overwrite=True, verbose=
         atomic_coords[-1].append(coords)
     
     #collect total energies
-    os.system('grep \'!    total energy\' %s > tmp.txt' %filename_out)
-    raw_v = [line for line in open('tmp.txt','r').readlines()]
+    os.system('grep \'!    total energy\' %s > %s' %(filename_out,tmp_name))
+    raw_v = [line for line in open(tmp_name,'r').readlines()]
     es = []
     for line in raw_v:
         prefix,sep,suffix = line.partition('=')
         e,sep,suffix = suffix.lstrip(' ').partition(' ')
         es.append(float(e))
     
-    os.remove('tmp.txt')
+    os.remove(tmp_name)
     t = time.time() - start_time
     
     
