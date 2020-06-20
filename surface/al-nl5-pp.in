@@ -1,0 +1,14 @@
+&inputpp
+    prefix  = 'al-nl5'
+    outdir='/home/alessandro/scratch'
+    filplot = 'al-nl5_charge'
+    plot_num= 0
+ /
+ &plot
+    nfile = 1
+    filepp(1) = 'al-nl5_charge'
+    weight(1) = 1.0
+    iflag = 3
+    output_format = 3
+    fileout = 'al-nl5.rho.xsf'
+ /

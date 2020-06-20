@@ -1,0 +1,16 @@
+echo "&inputpp
+    prefix  = '$1'
+    outdir='/home/alessandro/scratch'
+    filplot = '$1_charge'
+    plot_num= 0
+ /
+ &plot
+    nfile = 1
+    filepp(1) = '$1_charge'
+    weight(1) = 1.0
+    iflag = 3
+    output_format = 3
+    fileout = '$1.rho.xsf'
+ /" > $1-pp.in
+
+pp.x < $1-pp.in

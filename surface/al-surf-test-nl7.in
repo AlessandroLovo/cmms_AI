@@ -1,6 +1,6 @@
 &CONTROL
   restart_mode='from_scratch',
-  prefix='al-surf-test-nl5',
+  prefix='al-surf-test-nl7',
   pseudo_dir = '/home/alessandro/Quantum-Espresso/qe-6.5/pseudo/',
   outdir = '/home/alessandro/scratch',
   calculation = 'relax',
@@ -10,8 +10,8 @@
   nosym = .true.,
   ibrav = 6,
   celldm(1) = 5.280914,
-  celldm(3) = 8.269563,
-  nat = 5,
+  celldm(3) = 11.009305,
+  nat = 7,
   ntyp = 1,
   ecutwfc = 20.0,
   ecutrho = 80.0,
@@ -36,8 +36,10 @@ ATOMIC_SPECIES
 ATOMIC_POSITIONS (alat)
   Al 0. 0. 0.000000
   Al 0.5 0.5 0.707107
-  Al 0. 0. 1.414214 0 0 0
-  Al 0.5 0.5 2.121320
+  Al 0. 0. 1.414214
+  Al 0. 0. 2.121320 0 0 0
   Al 0. 0. 2.828427
+  Al 0.5 0.5 3.535534
+  Al 0. 0. 4.242641
 K_POINTS automatic
-  12 12 5 1 1 0
+  14 14 1 1 1 0

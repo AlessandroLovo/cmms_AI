@@ -23,7 +23,7 @@ def make_bulk_scf_df_template():
                         'cell_volume','pressure','total_energy','n_it','sim_time'])
 
 def make_surface_df_template(n_layers):
-    llabels = ['z atom %d' %(i+1) for i in range(n_layers)]
+    llabels = ['z%d' %(i+1) for i in range(n_layers)]
     return pd.DataFrame(data=[],columns=(['pseudo_name','a_0','vacuum_thickness','n_layers','ecutwfc','ecutrho_r','degauss',
                         'mixing_beta','conv_thr_o','n_k_points_hor','n_k_points_ver','k_point_shift',
                         'total_energy','n_it','sim_time'] + llabels))
@@ -393,7 +393,7 @@ def surface_sim_relax(work_dir='.',name='al-surf-test', overwrite=True, verbose=
     
     if type(save_df) != type(None):
         save_df.loc[len(save_df)] = [pseudo_name,a_0,vacuum_thickness,n_layers,ecutwfc,ecutrho_r,degauss,
-                                     mixing_beta,conv_thr_o,n_k_points_hor,n_k_points_ver,k_points_shift,
+                                     mixing_beta,conv_thr_o,n_k_points_hor,n_k_points_ver,'\''+k_points_shift+'\'',
                                      es[-1],len(es),t] + list(np.array(atomic_coords)[-1,:,2])
     
     if verbose:
