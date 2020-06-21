@@ -347,10 +347,11 @@ def surface_sim_relax(work_dir='.',name='al-surf-test', overwrite=True, verbose=
     file.write('  Al 26.981 %s\n' %pseudo_name)
     
     file.write('ATOMIC_POSITIONS (alat)\n')
+    middle_layer = n_layers // 2
     for i in range(n_layers):
-        if i == n_layers // 2:
+        if i == middle_layer:
             file.write('  Al 0. 0. %f 0 0 0\n' %(i/np.sqrt(2)))
-        elif i % 2 == 0:
+        elif (i - middle_layer) % 2 == 0:
             file.write('  Al 0. 0. %f\n' %(i/np.sqrt(2)))
         else:
             file.write('  Al 0.5 0.5 %f\n' %(i/np.sqrt(2)))
