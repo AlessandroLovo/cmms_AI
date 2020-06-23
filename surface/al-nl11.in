@@ -1,0 +1,49 @@
+&CONTROL
+  restart_mode='from_scratch',
+  prefix='al-nl11',
+  pseudo_dir = '/home/alessandro/Quantum-Espresso/qe-6.5/pseudo/',
+  outdir = '/home/alessandro/scratch',
+  calculation = 'relax',
+  forc_conv_thr = 0.001000,
+/
+&SYSTEM
+  nosym = .true.,
+  ibrav = 6,
+  celldm(1) = 5.280914,
+  celldm(3) = 11.186676,
+  nat = 11,
+  ntyp = 1,
+  ecutwfc = 20.0,
+  ecutrho = 80.0,
+  occupations = 'smearing',
+  smearing = 'mp',
+  degauss = 0.0200,
+/
+&ELECTRONS
+  mixing_mode = 'local-TF',
+  mixing_beta = 0.70,
+  conv_thr = 1d-6,
+/
+&IONS
+  ion_dynamics = 'bfgs',
+  bfgs_ndim = 1,
+  upscale = 100.0,
+  pot_extrapolation = 'second_order',
+  wfc_extrapolation = 'second_order',
+/
+ATOMIC_SPECIES
+  Al 26.981 Al.pz-vbc.UPF
+ATOMIC_POSITIONS (alat)
+  Al 0.5 0.5 0.000000
+  Al 0. 0. 0.707107
+  Al 0.5 0.5 1.414214
+  Al 0. 0. 2.121320
+  Al 0.5 0.5 2.828427
+  Al 0. 0. 3.535534 0 0 0
+  Al 0.5 0.5 4.242641
+  Al 0. 0. 4.949747
+  Al 0.5 0.5 5.656854
+  Al 0. 0. 6.363961
+  Al 0.5 0.5 7.071068
+K_POINTS automatic
+  16 16 1 1 1 0
