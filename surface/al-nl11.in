@@ -46,4 +46,4 @@ ATOMIC_POSITIONS (alat)
   Al 0. 0. 6.363961
   Al 0.5 0.5 7.071068
 K_POINTS automatic
-  16 16 1 1 1 0
+  14 14 1 1 1 0
