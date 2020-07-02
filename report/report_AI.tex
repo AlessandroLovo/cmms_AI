@@ -128,14 +128,72 @@
         \resizebox{0.47\textwidth}{!}{\import{img/}{n_l5_vacuum_nk10.pgf}}
         \label{fig:nl5_nk10}}
       \end{subfigure}
-      \begin{subfigure}[Relaxation of the layers during the simulation. Solid line with $t_v, n_k^h$ respectively 18 \si{.a.u}, 10; dashed line with 25 \si{.a.u}, 12]{
+      \begin{subfigure}[Relaxation of the layers during the simulation. Solid line with $t_v = 18 \si{.a.u}, n_k^h = 10$; dashed line with $t_v = 25 \si{.a.u}, n_k^h = 12$]{
         \resizebox{0.47\textwidth}{!}{\import{img/}{n_l5_relaxation.pgf}}
         \label{fig:nl5_relaxation}}
       \end{subfigure}
+      \caption{Results of the 5-layered system}
     \end{figure}
 
   \subsection{More layers}
     The same process of optimization performed on the 5-layered system has been done on systems with 7, 9 and 11 layers, obtaining the following.
+    For the 7 and 9-layered systems there is a nice behavior in the relaxation along iterations (fig \ref{fig:nl7-9r}) and in the behavior with repsect to the vacuum thickness. On the other hand the 11-layered system exhibits a more weird behavior (figs \ref{fig:nl11}, \ref{fig:nl11r}).
+
+    \begin{figure}
+      \centering
+      \resizebox{0.47\textwidth}{!}{\import{img/}{n_l7_n_k_hor_vac18.pgf}}
+      \resizebox{0.47\textwidth}{!}{\import{img/}{n_l7_vacuum_nk16.pgf}}\\
+      \resizebox{0.47\textwidth}{!}{\import{img/}{n_l9_n_k_hor_vac18.pgf}}
+      \resizebox{0.47\textwidth}{!}{\import{img/}{n_l9_vacuum_nk12.pgf}}\\
+      \caption{Dependence of total energy and $\Delta z_{01}$ on $t_v, n_k^h$ for the 7 and 9-layered system.}
+      \label{fig:nl7-9}
+    \end{figure}
+
+    \begin{figure}
+      \centering
+      \resizebox{0.47\textwidth}{!}{\import{img/}{n_l7_relaxation.pgf}}
+      \resizebox{0.47\textwidth}{!}{\import{img/}{n_l9_relaxation.pgf}}
+      \caption{Relaxation of the 7 and 9 layered systems}
+      \label{fig:nl7-9r}
+    \end{figure}
+
+    \begin{figure}
+      \centering
+      \resizebox{0.47\textwidth}{!}{\import{img/}{n_l11_n_k_hor_vac18.pgf}}
+      \resizebox{0.47\textwidth}{!}{\import{img/}{n_l11_vacuum_nk14_nk16.pgf}}
+      \caption{In the second plot the solid line refers to $n_k^h = 14$ and the dashed one to $n_k^h = 16$}
+      \label{fig:nl11}
+    \end{figure}
+
+    \begin{figure}
+      \centering
+      \resizebox{0.47\textwidth}{!}{\import{img/}{n_l11_relaxation_nk14.pgf}}
+      \resizebox{0.47\textwidth}{!}{\import{img/}{n_l11_relaxation.pgf}}
+      \caption{Relaxation of the layers at $n_k^h = 14$ and $n_k^h = 16$ respectively.}
+      \label{fig:nl11r}
+    \end{figure}
+
+
+
+    \begin{table}[H]
+      \centering
+      \begin{tabular}{ccccccccc}
+        \toprule
+        Source & $n_{layers}$ & $n_k^h$ & $t_v$ [\si{a.u}] & $\Delta z_{01}$ [\%] & $\Delta z_{12}$ & $\Delta z_{23}$ & $\Delta z_{34}$ & $\Delta z_{45}$ \\
+        \midrule
+        This work & 5  & 10 & 18 & 4.23 & 0.90 & & & \\
+        \bottomrule
+      \end{tabular}
+      \caption{}
+      \label{tab:surface_results}
+    \end{table}
+
+
+
+
+
+
+
 
 
 

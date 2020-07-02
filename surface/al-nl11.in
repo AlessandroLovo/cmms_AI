@@ -10,7 +10,7 @@
   nosym = .true.,
   ibrav = 6,
   celldm(1) = 5.280914,
-  celldm(3) = 11.186676,
+  celldm(3) = 11.565398,
   nat = 11,
   ntyp = 1,
   ecutwfc = 20.0,
@@ -46,4 +46,4 @@ ATOMIC_POSITIONS (alat)
   Al 0. 0. 6.363961
   Al 0.5 0.5 7.071068
 K_POINTS automatic
-  14 14 1 1 1 0
+  15 15 1 1 1 0
