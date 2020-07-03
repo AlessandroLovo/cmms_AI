@@ -65,7 +65,7 @@
     \end{figure}
 
   \subsection{Results}
-    The results of the scanning of the lattice parameter are reported in fig \ref{fig:bulk_a} while the results of the fit with with the Murnaghan equation are in tab \ref{tab:bulk_a}.
+    The results of the scanning of the lattice parameter are reported in fig \ref{fig:bulk_a} while the results of the fit with with the Murnaghan equation are in tab \ref{tab:bulk_a}. As expected the relativistic pseudopotential has a better agrrement with the experimental lattice constant.
 
   \begin{figure}
     \centering
@@ -105,7 +105,7 @@
     \end{figure}
 
   \subsection{Optimization of the simulation parameters}
-    To obtain meaningful results one has first to see how the simulation parameters affect the relaxation. By doing some trials one finds that there is no big dependence on \verb|degauss| and \verb|ecutrho|, so one can fix them at $\verb|degauss| = 0.02 \si{.Ry},\, \verb|ecutrho|/\verb|ecutwfc| = 4$, and study the dependence on $\verb|ecutwfc|, t_v$ and the mesh of k points used for sampling the Brillouin zone, which, due to the symmetry of the unit cell has $n_k^h$ k points in the x and y direction and $n_k^v$ in the z direction. Since the unit cell is elongated on the z axis the Brillouin zone will be sqeezed along the z axis meaning that $n_k^v < n_k^h$. Also for now the computation are performed with the non-relativistic pseudopotential.
+    To obtain meaningful results one has first to see how the simulation parameters affect the relaxation. By doing some trials one finds that there is no big dependence on \verb|degauss| and \verb|ecutrho|, so one can fix them at $\verb|degauss| = 0.02 \si{.Ry},\, \verb|ecutrho|/\verb|ecutwfc| = 4$, and study the dependence on $\verb|ecutwfc|, t_v$ and the mesh of k points used for sampling the Brillouin zone, which, due to the symmetry of the unit cell has $n_k^h$ k points in the x and y direction and $n_k^v$ in the z direction. Since the unit cell is elongated on the z axis the Brillouin zone will be squeezed along the z axis meaning that $n_k^v < n_k^h$. Also for now the computation are performed with the non-relativistic pseudopotential.
     Starting with 5 layers and $\verb|ecutwfc| = 20 \si{.Ry},\, t_v = 25 \si{.a.u},\, n_k^v = 1,\, n_k^h = 12$ one can try to vary each of these parameters and see how the system responds (fig \ref{fig:nl5_tuning}).
 
     \begin{figure}[H]
@@ -137,7 +137,9 @@
 
   \subsection{More layers}
     The same process of optimization performed on the 5-layered system has been done on systems with 7, 9 and 11 layers, obtaining the following.
-    For the 7 and 9-layered systems there is a nice behavior in the relaxation along iterations (fig \ref{fig:nl7-9r}) and in the behavior with repsect to the vacuum thickness. On the other hand the 11-layered system exhibits a more weird behavior (figs \ref{fig:nl11}, \ref{fig:nl11r}).
+    For the 7 and 9-layered systems there is a nice behavior in the relaxation along iterations (fig \ref{fig:nl7-9r}) and in the behavior with respect to the vacuum thickness (fig \ref{fig:nl7-9}). On the other hand the 11-layered system exhibits a more weird behavior (figs \ref{fig:nl11}, \ref{fig:nl11r}). For this last system the simulations with $n_k^h = 14$ induce less fluctuation with respect to $t_v$ and so are more reliable.
+    It is here interesting to notice that in this simulations one expects that is $n_k^h$ or $t_v$ are increased, the results should get better with the only drawback of a longer simulation. On the other hand one can observe that actually this is not always true maybe because the higher precision amplifies unphysical charachteristics of the pseudopotential yielding a meaningless outcome.
+    All the results are reported in tab \ref{tab:surface_results}.
 
     \begin{figure}
       \centering
@@ -173,20 +175,53 @@
       \label{fig:nl11r}
     \end{figure}
 
-
-
     \begin{table}[H]
       \centering
       \begin{tabular}{ccccccccc}
         \toprule
-        Source & $n_{layers}$ & $n_k^h$ & $t_v$ [\si{a.u}] & $\Delta z_{01}$ [\%] & $\Delta z_{12}$ & $\Delta z_{23}$ & $\Delta z_{34}$ & $\Delta z_{45}$ \\
+        $n_{layers}$ & $n_k^h$ & $t_v$ [\si{a.u}] & $\Delta z_{01}$ [\%] & $\Delta z_{12}$ & $\Delta z_{23}$ & $\Delta z_{34}$ & $\Delta z_{45}$ \\
         \midrule
-        This work & 5  & 10 & 18 & 4.23 & 0.90 & & & \\
+        5  & 10 & 18 & 4.23 & 0.90 & & & \\
+        7  & 16 & 18 & 1.14 & 0.77 & -1.12 & & \\
+        9  & 12 & 18 & 1.24 & 0.90 & 0.03 & -0.99 & \\
+        11 & 14 & 18 & 1.66 & -0.02 & -0.42 & 0.56 & -0.39 \\
         \bottomrule
       \end{tabular}
-      \caption{}
+      \caption{Results of the relaxation}
       \label{tab:surface_results}
     \end{table}
+
+
+  \subsection{Comparison with theory and experiments}
+    In the work by Zheng et al. \cite{rif:Al_relaxations} they study the relaxation of the 9-layered Al 100 surface via ab initio methods comparing their results with theoretical predictions and experimental data. In tab \ref{tab:comparison} are reported the results they found compared with the ones obtained here, where the coputations have been performed also using the relativistic pseudopotential.\\
+    Most of the surfaces of fcc crystals relax inward, however, as experiments show, the Al 100 surface exhibits an anomalous outward relaxation.
+    Interestingly, the data obtained with the non-relativistic pseudopotential agree with the experiments while the relativistic ones predict a more standard, but wrong, inward relaxation despite estimating better the bulk lattice constant.
+
+    \begin{table}[H]
+      \centering
+      \begin{tabular}{ccccccccccc}
+        \toprule
+        & $\Delta z_{01}$ [\%] & $\Delta z_{12}$ & $\Delta z_{23}$ & $\Delta z_{34}$ & method \\
+        \midrule
+        This report & 1.24 & 0.90 & 0.03 & -0.99 & ab initio non-relativistic pseudopotential \\
+                    & -2.79 & -4.03 & -2.26 & -3.93 & ab initio relativistic pseudopotential \\
+        \midrule
+        Zheng et al. & 1.89 & 4.12 & 2.96 & 2.94 & ab initio \\
+        % \midrule
+        Theory & 0.79 & 0.06 & 0.01 & 0.00 & MEAM \cite{rif:MEAM} \\
+               & -4.9 & -2.24 & -2.25 & -2.39 & EAM \cite{rif:EAM} \\
+        % \midrule
+        Experiment \cite{rif:experiment} & 1.8 & & & & \\
+        \bottomrule
+      \end{tabular}
+      \caption{Comparison between different caluclation of the relaxation of the 9-layered system.}
+      \label{tab:comparison}
+    \end{table}
+
+
+\section{Conclusion}
+  After understanding the effect of the simulations parameters it has been possible to estimate bulk properties such as the lattice constant and the bulk modulus. The estimation of the relaxation of the Al 100 surface has proven to be more tricky in the proper choice of the simulation parameters, expecially the number of k points used to sample the Brillouin zone. However despite these difficulties it has been possible to obtain a result that has a quite nice agreement with experimental data.
+
 
 
 
@@ -207,7 +242,11 @@
   \bibitem{rif:murnaghan} Wikipedia \emph{Murnaghan equation of state}  \url{https://en.wikipedia.org/wiki/Murnaghan_equation_of_state}
   \bibitem{rif:manual1}  \emph{Quantum ESPRESSO tutorial:  Self-Consistent Calculations, Supercells, Structural Optimization}  \url{http://indico.ictp.it/event/8301/session/95/contribution/528/material/slides/0.pdf}
   \bibitem{rif:bulk_exp_data} D.E. Grady \emph{Equation of state for solids}  \url{https://doi.org/10.1063/1.3686399}
-  \bibitem{rif:Al_relaxations} J.C. Zheng \emph{Multilayer  relaxation  of  the  Al(100)  and  Al(110)  surfaces: an  ab  initio  pseudopotential  study}  \url{https://www.sciencedirect.com/science/article/pii/S0368204800003625}
+  \bibitem{rif:Al_relaxations} J.C. Zheng et al. \emph{Multilayer  relaxation  of  the  Al(100)  and  Al(110)  surfaces: an  ab  initio  pseudopotential  study}  \url{https://www.sciencedirect.com/science/article/pii/S0368204800003625}.
+  The following are indirect references from this work:
+  \bibitem{rif:MEAM} J. Wan, Y.L. Fan, D.W. Gong, S.G. Shen, X.Q. Fan, Model. Simul. Mater. Sci. Eng 7 (1999) 189
+  \bibitem{rif:experiment} H.L. Davis, J.B. Hannon, K.B. Ray, E.W. Plummer, Phys. Rev. Lett. 68 (1992) 2632
+  \bibitem{rif:EAM} F. Jona, D. Sondericker, P.M. Marcus, J.Phys. C: Solid State Phys. 13 (1980) L155
 \end{thebibliography}
 
 \end{document}
