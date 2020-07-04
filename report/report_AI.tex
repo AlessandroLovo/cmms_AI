@@ -16,7 +16,7 @@
   The idea to find the equilibrium lattice constant $a_0$ is to simulate the crystal at different values of $a$ and for each of them compute the pressure $P$ resulting on the system. At this point data can be fitted with the Murnaghan equation of state:
 
   \begin{equation*}
-    P(V;V_0,K_0,k_0') = \frac{K_0}{K_0'}\left(\left(\frac{V}{V_0} \right)^{-K_0'} - 1 \right)
+    P(V;V_0,K_0,K_0') = \frac{K_0}{K_0'}\left(\left(\frac{V}{V_0} \right)^{-K_0'} - 1 \right)
   \end{equation*}
 
   where $V$ is the volume of the unit cell and $V_0$ the one at equilibrium, while the bulk modulus is $K = -V \left(\frac{\partial P}{\partial V}\right)_T \approx K_0 + K_0'P$.
@@ -29,9 +29,9 @@
       From all the many pseudopotentials provided in the QE library, here a non relativistic one (\verb|Al.pz-vbc.UPF|) and a scalar-relativistic one (\verb|Al.pbe-nl-rrkjus_psl.1.0.0.UPF|) are tested.
       With the latter one obtains a better approximation but the simulations take longer.
     \paragraph{Number of k points and smearing}
-      To sample the first Brillouin zone a grid with \verb|n k points| in each direction is used: the higher the number the more accurate is the result, but also the longer the simulation takes. To mitigate this coarse sampling of the Brillouin zone one can increase the smearing of the energy levels, whose amplitude is controlled by the variable \verb|degauss|. By monitoring how the total energy behaves with these two parameters one can find a proper value for them: $\verb|n k points| = 8$, $ \verb|degauss| = 0.02 \si{.Ry}$ (fig \ref{fig:bulk_degauss-n_k} where the two 1D plots are taken at the best value of the other parameter.).
+      To sample the first Brillouin zone a grid with \verb|n k points| in each direction is used: the higher the number the more accurate is the result, but also the longer the simulation takes. Also to compensate for the creation of artificial energy gaps due to the finite size of the system one can smear the energy levels. The smearing amplitude is controlled by the variable \verb|degauss|. By monitoring how the total energy behaves with these two parameters one can find a proper value for them: $\verb|n k points| = 8$, $ \verb|degauss| = 0.02 \si{.Ry}$ (fig \ref{fig:bulk_degauss-n_k} where the two 1D plots are taken at the best value of the other parameter.).
 
-    \begin{figure}
+    \begin{figure}[H]
       \centering
       \resizebox{0.45\textwidth}{!}{\import{img/}{bulk_degauss-n_k_rel.pgf}}
       \resizebox{0.45\textwidth}{!}{\import{img/}{bulk_degauss-n_k_rel_time.pgf}} \\
@@ -54,9 +54,9 @@
     % \end{figure}
 
   \paragraph{Energy cutoffs}
-    The orbitals for the electron are expanded in plain waves, and the number of waves used in the expansion is controlled by the variable \verb|ecutwfc|. Similarly the number of waves used for computing the density is controlled by \verb|ecutrho| which by default is set to $4\verb|ecutwfc|$. In fig \ref{fig:bulk_ecut} one can see that with $ \verb|ecutwfc| = 80 \si{.Ry}$ error on the energy is of the order of $10^{-7} \si{.Ry}$. With this setting the effect of the cutoff on the density is negligible and so the default value is used.
+    The orbitals for the electrons are expanded in plain waves, and the number of waves used in the expansion is controlled by the variable \verb|ecutwfc|. Similarly the number of waves used for computing the density is controlled by \verb|ecutrho| which by default is set to $4\verb|ecutwfc|$. In fig \ref{fig:bulk_ecut} one can see that with $ \verb|ecutwfc| = 80 \si{.Ry}$ error on the energy is of the order of $10^{-7} \si{.Ry}$. With this setting the effect of the cutoff on the density is negligible and so the default value is used.
 
-    \begin{figure}
+    \begin{figure}[H]
       \centering
       \resizebox{0.45\textwidth}{!}{\import{img/}{bulk_ecutwfc_rel2.pgf}}
       \resizebox{0.45\textwidth}{!}{\import{img/}{bulk_ecutrho_rel2.pgf}}
@@ -95,7 +95,7 @@
 
 \section{Surface relaxation}
   \subsection{Unit cell}
-    To simulate a surface in a periodically repeated system one has to simulate slabs separated by a layer of vacuum along the z axis with thickness $t_v$. The slab will be composed by an odd number of layers where the atoms of the central layers are fixed while the others are free to move. Due to the periodicity of the crystal it is sufficient to put in the unit cell a single atom per layer (fig \ref{fig:cell}). The starting configuration will have the atoms spaced with the bulk lattice constant found above and the layer relaxation will be expressed as $\Delta z_{n,n+1} = \frac{z_{n+1} - z_n}{\left(z_{n+1} - z_n \right)_{bulk} -1},\, n \in 0,1,\dots,\frac{n_{layers} - 1}{2}$ where the outermost layer is numbered with 0.
+    To simulate a surface in a periodically repeated system one has to simulate slabs separated by a layer of vacuum along the z axis with thickness $t_v$. The slab will be composed by an odd number of layers where the atoms of the central layers are fixed while the others are free to move. Due to the periodicity of the crystal it is sufficient to put in the unit cell a single atom per layer (fig \ref{fig:cell}). The starting configuration will have the atoms spaced with the bulk lattice constant found above and the layer relaxation will be expressed as $\Delta z_{n,n+1} = \frac{z_{n+1} - z_n}{\left(z_{n+1} - z_n \right)_{bulk}} -1,\, n \in 0,1,\dots,\frac{n_{layers} - 3}{2}$ where the outermost layer is numbered with 0.
 
     \begin{figure}
       \centering
@@ -105,8 +105,8 @@
     \end{figure}
 
   \subsection{Optimization of the simulation parameters}
-    To obtain meaningful results one has first to see how the simulation parameters affect the relaxation. By doing some trials one finds that there is no big dependence on \verb|degauss| and \verb|ecutrho|, so one can fix them at $\verb|degauss| = 0.02 \si{.Ry},\, \verb|ecutrho|/\verb|ecutwfc| = 4$, and study the dependence on $\verb|ecutwfc|, t_v$ and the mesh of k points used for sampling the Brillouin zone, which, due to the symmetry of the unit cell has $n_k^h$ k points in the x and y direction and $n_k^v$ in the z direction. Since the unit cell is elongated on the z axis the Brillouin zone will be squeezed along the z axis meaning that $n_k^v < n_k^h$. Also for now the computation are performed with the non-relativistic pseudopotential.
-    Starting with 5 layers and $\verb|ecutwfc| = 20 \si{.Ry},\, t_v = 25 \si{.a.u},\, n_k^v = 1,\, n_k^h = 12$ one can try to vary each of these parameters and see how the system responds (fig \ref{fig:nl5_tuning}).
+    To obtain meaningful results one has first to see how the simulation parameters affect the relaxation. By doing some trials one finds that there is no big dependence on \verb|degauss| and \verb|ecutrho|, so one can fix them at $\verb|degauss| = 0.02 \si{.Ry},\, \verb|ecutrho|/\verb|ecutwfc| = 4$, and study the dependence on $\verb|ecutwfc|, t_v$ and the mesh of k points used for sampling the Brillouin zone, which, due to the symmetry of the unit cell has $n_k^h$ k points in the x and y direction and $n_k^v$ in the z direction. Since the unit cell is elongated on the z axis the Brillouin zone will be squeezed along the z axis meaning that $n_k^v < n_k^h$. Also for now the computations are performed with the non-relativistic pseudopotential.
+    Starting with 5 layers and $\verb|ecutwfc| = 20 \si{.Ry},\, t_v = 25\ \text{a.u.},\, n_k^v = 1,\, n_k^h = 12$ one can try to vary each of these parameters and see how the system responds (fig \ref{fig:nl5_tuning}).
 
     \begin{figure}[H]
       \centering
@@ -118,9 +118,10 @@
       \label{fig:nl5_tuning}
     \end{figure}
 
-    From by doing some more computations one can see that increasing \verb|ecutwfc| does not improve the results simply increasing the simulation time. For this reason henceforth $\verb|ecutwfc| = 20 \si{.Ry}$. At this point one can notice that the effect of varying $n_k^v$ is negligible with respect to the one of varying $n_k^h$, so it reasonable to use $n_k^v = 1$.
-    From fig \ref{fig:nl5_tuning} one can see that for $t_v > 25 \si{.a.u}$ the system seems to converge, while changes in $n_k^h$ induce quite high fluctuations in the relaxation results. Also the choice of this parameter heavily affects the behavior of $\Delta z_{01}$ with respect to $t_v$. If one uses $n_k^h = 10$, he obtains fig \ref{fig:nl5_nk10} where the trend in $\Delta z_{01}$ seems more natural.
-    If one plots the realxation of the layers at the two different values for $n_k^h$ (fig \ref{fig:nl5_relaxation}) one can notice that for $n_k^h = 12$ the result is quite odd, namely the inner layer relaxes more than the outer one. This analysis of the relaxation can be then another criterion for choosing the proper set of simulation parameters.
+    By doing some more computations one can see that increasing \verb|ecutwfc| does not reduce the oscillations with respect to the other parameters, simply increasing the simulation time. For this reason henceforth $\verb|ecutwfc| = 20 \si{.Ry}$. At this point one can notice that the effect of varying $n_k^v$ is negligible with respect to the one of varying $n_k^h$, so it reasonable to use $n_k^v = 1$.
+    From fig \ref{fig:nl5_tuning} one can see that for $t_v > 25\ \text{a.u.}$ the system seems to converge, while changes in $n_k^h$ induce quite high fluctuations in the relaxation results. Also the choice of this parameter heavily affects the behavior of $\Delta z_{01}$ with respect to $t_v$.
+    If one uses $n_k^h = 10$, he obtains fig \ref{fig:nl5_nk10} where the trend in $\Delta z_{01}$ seems more natural than the one at $n_k^h = 12$ (fig \ref{fig:nl5_tuning}).
+    Also if one plots the realxation of the layers at the two different values for $n_k^h$ (fig \ref{fig:nl5_relaxation}) one can notice that for $n_k^h = 12$ the result is quite odd, namely the inner layer relaxes more than the outer one, so this analysis of the relaxation can be then another criterion for choosing the proper set of simulation parameters.
 
     \begin{figure}[H]
       \centering
@@ -128,7 +129,7 @@
         \resizebox{0.47\textwidth}{!}{\import{img/}{n_l5_vacuum_nk10.pgf}}
         \label{fig:nl5_nk10}}
       \end{subfigure}
-      \begin{subfigure}[Relaxation of the layers during the simulation. Solid line with $t_v = 18 \si{.a.u}, n_k^h = 10$; dashed line with $t_v = 25 \si{.a.u}, n_k^h = 12$]{
+      \begin{subfigure}[Relaxation of the layers during the simulation. Solid line with $t_v = 18\ \text{a.u.}, n_k^h = 10$; dashed line with $t_v = 25\ \text{a.u.}, n_k^h = 12$]{
         \resizebox{0.47\textwidth}{!}{\import{img/}{n_l5_relaxation.pgf}}
         \label{fig:nl5_relaxation}}
       \end{subfigure}
@@ -138,7 +139,8 @@
   \subsection{More layers}
     The same process of optimization performed on the 5-layered system has been done on systems with 7, 9 and 11 layers, obtaining the following.
     For the 7 and 9-layered systems there is a nice behavior in the relaxation along iterations (fig \ref{fig:nl7-9r}) and in the behavior with respect to the vacuum thickness (fig \ref{fig:nl7-9}). On the other hand the 11-layered system exhibits a more weird behavior (figs \ref{fig:nl11}, \ref{fig:nl11r}). For this last system the simulations with $n_k^h = 14$ induce less fluctuation with respect to $t_v$ and so are more reliable.
-    It is here interesting to notice that in this simulations one expects that is $n_k^h$ or $t_v$ are increased, the results should get better with the only drawback of a longer simulation. On the other hand one can observe that actually this is not always true maybe because the higher precision amplifies unphysical charachteristics of the pseudopotential yielding a meaningless outcome.
+
+    It is here interesting to notice that in these simulations one expects that if $n_k^h$ or $t_v$ are increased, the results should get better with the only drawback of a longer simulation. On the other hand one can observe that actually this is not always true, maybe because the higher precision amplifies unphysical charachteristics of the pseudopotential yielding a meaningless outcome.
     All the results are reported in tab \ref{tab:surface_results}.
 
     \begin{figure}
@@ -175,11 +177,18 @@
       \label{fig:nl11r}
     \end{figure}
 
+    \begin{figure}
+      \centering
+      \includegraphics[width=0.6\textwidth]{img/al-nl9-multi.png}
+      \caption{Section of the electronic density for the 9-layered system after the relaxation with non relativistic pseudopotential.}
+      \label{fig:nl9-rho}
+    \end{figure}
+
     \begin{table}[H]
       \centering
       \begin{tabular}{ccccccccc}
         \toprule
-        $n_{layers}$ & $n_k^h$ & $t_v$ [\si{a.u}] & $\Delta z_{01}$ [\%] & $\Delta z_{12}$ & $\Delta z_{23}$ & $\Delta z_{34}$ & $\Delta z_{45}$ \\
+        $n_{layers}$ & $n_k^h$ & $t_v$ [a.u.] & $\Delta z_{01}$ [\%] & $\Delta z_{12}$ & $\Delta z_{23}$ & $\Delta z_{34}$ & $\Delta z_{45}$ \\
         \midrule
         5  & 10 & 18 & 4.23 & 0.90 & & & \\
         7  & 16 & 18 & 1.14 & 0.77 & -1.12 & & \\
@@ -193,7 +202,8 @@
 
 
   \subsection{Comparison with theory and experiments}
-    In the work by Zheng et al. \cite{rif:Al_relaxations} they study the relaxation of the 9-layered Al 100 surface via ab initio methods comparing their results with theoretical predictions and experimental data. In tab \ref{tab:comparison} are reported the results they found compared with the ones obtained here, where the coputations have been performed also using the relativistic pseudopotential.\\
+    In the work by Zheng et al. \cite{rif:Al_relaxations} they study the relaxation of the 9-layered Al 100 surface via ab initio methods comparing their results with theoretical predictions and experimental data. In tab \ref{tab:comparison} are reported the results they found compared with the ones obtained here, where the coputations have been performed also using the relativistic pseudopotential.
+
     Most of the surfaces of fcc crystals relax inward, however, as experiments show, the Al 100 surface exhibits an anomalous outward relaxation.
     Interestingly, the data obtained with the non-relativistic pseudopotential agree with the experiments while the relativistic ones predict a more standard, but wrong, inward relaxation despite estimating better the bulk lattice constant.
 
@@ -219,8 +229,10 @@
     \end{table}
 
 
+
+
 \section{Conclusion}
-  After understanding the effect of the simulations parameters it has been possible to estimate bulk properties such as the lattice constant and the bulk modulus. The estimation of the relaxation of the Al 100 surface has proven to be more tricky in the proper choice of the simulation parameters, expecially the number of k points used to sample the Brillouin zone. However despite these difficulties it has been possible to obtain a result that has a quite nice agreement with experimental data.
+  After understanding the effect of the simulations parameters it has been possible to estimate bulk properties such as the lattice constant and the bulk modulus of the Aluminium crystal. On the other hand, the estimation of the relaxation of the Al 100 surface has proven to be more tricky in the proper choice of the simulation parameters, expecially the number of k points used to sample the Brillouin zone. However despite these difficulties it has been possible to obtain a result that has a quite nice agreement with experimental data.
 
 
 
