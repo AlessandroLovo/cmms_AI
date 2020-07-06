@@ -37,7 +37,7 @@
       \resizebox{0.45\textwidth}{!}{\import{img/}{bulk_degauss-n_k_rel_time.pgf}} \\
       \resizebox{0.45\textwidth}{!}{\import{img/}{bulk_n_k_rel.pgf}}
       \resizebox{0.45\textwidth}{!}{\import{img/}{bulk_degauss_rel.pgf}}
-      \caption{Behavior of the total energy and the simulation time as a function of the number of k points and of the amount of smearing. Simulations performed on the relativistic pseudopotential, but with the other the results are very similar.}
+      \caption{Behavior of the total energy and the simulation time as a function of the number of k points and of the amount of smearing. These plots come from simulations performed on the relativistic pseudopotential, but with the other the results are very similar.}
       \label{fig:bulk_degauss-n_k}
     \end{figure}
 
@@ -54,7 +54,7 @@
     % \end{figure}
 
   \paragraph{Energy cutoffs}
-    The orbitals for the electrons are expanded in plain waves, and the number of waves used in the expansion is controlled by the variable \verb|ecutwfc|. Similarly the number of waves used for computing the density is controlled by \verb|ecutrho| which by default is set to $4\verb|ecutwfc|$. In fig \ref{fig:bulk_ecut} one can see that with $ \verb|ecutwfc| = 80 \si{.Ry}$ error on the energy is of the order of $10^{-7} \si{.Ry}$. With this setting the effect of the cutoff on the density is negligible and so the default value is used.
+    The orbitals for the electrons are expanded in plain waves, and the number of waves used in the expansion is controlled by the variable \verb|ecutwfc|. Similarly the number of waves used for computing the density is controlled by \verb|ecutrho| which by default is set to $4\verb|ecutwfc|$. In fig \ref{fig:bulk_ecut} one can see that with $ \verb|ecutwfc| = 80 \si{.Ry}$ the error on the energy is of the order of $10^{-7} \si{.Ry}$. With this setting the effect of the cutoff on the density is negligible and so the default value is used.
 
     \begin{figure}[H]
       \centering
@@ -196,7 +196,7 @@
         11 & 14 & 18 & 1.66 & -0.02 & -0.42 & 0.56 & -0.39 \\
         \bottomrule
       \end{tabular}
-      \caption{Results of the relaxation}
+      \caption{Results of the relaxation with non-relativistic pseudopotential.}
       \label{tab:surface_results}
     \end{table}
 
